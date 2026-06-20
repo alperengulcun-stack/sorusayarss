@@ -59,14 +59,13 @@ button{
 
 .baslik{
     font-weight:bold;
-    font-size:16px;
-    margin-bottom:6px;
+    margin-bottom:5px;
 }
 
 .detay{
     font-size:14px;
-    opacity:0.8;
-    margin-bottom:6px;
+    opacity:0.85;
+    margin-bottom:5px;
 }
 
 .kim{
@@ -84,6 +83,7 @@ button{
     border-radius:6px;
     padding:3px 6px;
     font-size:12px;
+    cursor:pointer;
 }
 
 .durum{
@@ -109,6 +109,19 @@ button{
     left:10px;
     font-size:12px;
     opacity:0.6;
+    cursor:pointer;
+}
+
+/* kalp */
+.kalp{
+    position:fixed;
+    font-size:30px;
+    animation:yukari 1s ease-out forwards;
+}
+
+@keyframes yukari{
+    0%{opacity:1; transform:translateY(0);}
+    100%{opacity:0; transform:translateY(-80px);}
 }
 </style>
 </head>
@@ -127,7 +140,7 @@ button{
 
 <div id="liste"></div>
 
-<div class="footer">eda hepcan</div>
+<div class="footer" onclick="kalpCik(event)">eda hepcan</div>
 
 <script>
 let data = JSON.parse(localStorage.getItem("data") || "[]");
@@ -198,6 +211,19 @@ function yanlis(i){
 function sifirla(){
     data = [];
     guncelle();
+}
+
+/* 💖 kalp efekti */
+function kalpCik(e){
+    let kalp = document.createElement("div");
+    kalp.className = "kalp";
+    kalp.innerHTML = "💖";
+    kalp.style.left = e.clientX + "px";
+    kalp.style.top = e.clientY + "px";
+
+    document.body.appendChild(kalp);
+
+    setTimeout(()=>kalp.remove(),1000);
 }
 
 guncelle();
