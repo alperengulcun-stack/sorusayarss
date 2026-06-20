@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soru Sayar</title>
+
+<style>
+body{
+    font-family: Arial;
+    margin:0;
+    background: linear-gradient(135deg,#111,#222);
+    color:white;
+    padding:15px;
+}
+
+h1{text-align:center;}
+
+#sayac{
+    font-size:60px;
+    text-align:center;
+    margin:10px 0;
+    font-weight:bold;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-bottom:8px;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    margin-bottom:8px;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.add{background:#22c55e;color:white;}
+.reset{background:#ef4444;color:white;}
+
+#liste{
+    margin-top:15px;
+}
+
+.soru{
+    background:rgba(255,255,255,0.08);
+    padding:12px;
+    margin:10px 0;
+    border-radius:12px;
+    position:relative;
+}
+
+.baslik{
+    font-weight:bold;
+    font-size:16px;
+    margin-bottom:6px;
+}
+
+.detay{
+    font-size:14px;
+    opacity:0.8;
+    margin-bottom:6px;
+}
+
+.kim{
+    font-size:12px;
+    opacity:0.6;
+}
+
+.sil{
+    position:absolute;
+    right:8px;
+    top:8px;
+    background:#ef4444;
+    border:none;
+    color:white;
+    border-radius:6px;
+    padding:3px 6px;
+    font-size:12px;
+}
+
+.durum{
+    margin-top:8px;
+    display:flex;
+    gap:5px;
+}
+
+.durum button{
+    flex:1;
+    padding:6px;
+    font-size:12px;
+    border-radius:6px;
+    border:none;
+}
+
+.ok{background:#16a34a;color:white;}
+.no{background:#f59e0b;color:white;}
+
+.footer{
+    position:fixed;
+    bottom:10px;
+    left:10px;
+    font-size:12px;
+    opacity:0.6;
+}
+</style>
+</head>
+
+<body>
+
+<h1>SORU SAYAR</h1>
+
+<div id="sayac">0</div>
+
+<input id="kim" placeholder="Kim sordu?">
+<input id="soru" placeholder="Soruyu yaz...">
+
+<button class="add" onclick="ekle()">➕ Soru Ekle</button>
+<button class="reset" onclick="sifirla()">🔄 Sıfırla</button>
+
+<div id="liste"></div>
+
+<div class="footer">eda hepcan</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem("data") || "[]");
+
+function guncelle(){
+    document.getElementById("sayac").innerText = data.length;
+
+    let html = "";
+
+    data.forEach((item, i)=>{
+        html += `
+        <div class="soru">
+
+            <button class="sil" onclick="sil(${i})">🗑</button>
+
+            <div class="baslik">${i+1}. Soru</div>
+
+            <div class="detay">${item.soru}</div>
+
+            <div class="kim">👤 ${item.kim}</div>
+            <div class="kim">Durum: ${item.durum}</div>
+
+            <div class="durum">
+                <button class="ok" onclick="dogru(${i})">✔ Doğru</button>
+                <button class="no" onclick="yanlis(${i})">✖ Yanlış</button>
+            </div>
+
+        </div>`;
+    });
+
+    document.getElementById("liste").innerHTML = html;
+    localStorage.setItem("data", JSON.stringify(data));
+}
+
+function ekle(){
+    let kim = document.getElementById("kim").value;
+    let soru = document.getElementById("soru").value;
+
+    if(soru.trim() === "") return;
+
+    data.push({
+        kim: kim || "Bilinmiyor",
+        soru: soru,
+        durum: "bekliyor"
+    });
+
+    document.getElementById("kim").value = "";
+    document.getElementById("soru").value = "";
+
+    guncelle();
+}
+
+function sil(i){
+    data.splice(i,1);
+    guncelle();
+}
+
+function dogru(i){
+    data[i].durum = "doğru";
+    guncelle();
+}
+
+function yanlis(i){
+    data[i].durum = "yanlış";
+    guncelle();
+}
+
+function sifirla(){
+    data = [];
+    guncelle();
+}
+
+guncelle();
+</script>
+
+</body>
+</html>
